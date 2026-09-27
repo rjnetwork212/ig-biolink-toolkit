@@ -1,10 +1,11 @@
 ---
 name: instagram-biolink-browser-issue
-description: IG bio-link fleet toolkit 27 Sep — akar masalah (web editor dihapus IG),
-  skema API updated_links/ordered_link_ids dari decompile APK 448, bookmarklet v7 "IG
-  Tools" multi-menu terenkripsi (install via gist import), ekstraksi sesi (AccountManager
-  IGT:2 + Lite WebView authorization cookie), ekstensi IG App UA, repo private
-  ig-biolink-toolkit; insiden challenge_required & disiplin tulis 1-2x/hari
+description: IG fleet toolkit 27 Sep — bio-link & follow otomatis IG: REST
+  update_bio_links/ordered_link_ids (wajib UA app-signature), follow via GraphQL
+  usePolarisFollowMutation doc_id 26508036048874888 (9/9 sukses, tanpa UA mobile),
+  bookmarklet v7.1 "IG Tools" 5-tab terenkripsi (gist import), ekstraksi sesi
+  (AccountManager IGT:2 + Lite WebView authorization cookie), ekstensi IG App UA,
+  repo private ig-biolink-toolkit; matriks channel akun baru & disiplin tulis 1-2x/hari
 metadata:
   node_type: memory
   type: project
@@ -96,3 +97,5 @@ Fakta teruji:
 **BREAKTHROUGH — FOLLOW VIA GRAPHQL BERHASIL (27 Sep, 9/9 terkirim):** follow otomatis JALAN lewat **GraphQL, bukan REST**. Resep: POST `/api/graphql` same-origin, body = template dari klien asli (29 param: av=<viewer id web 178…>, __d=www, __user=0, __a=1, __req, __hs, dpr, __ccg, __rev, __s, __hsi, __dyn, __csr, __hsdp, __hblp, __sjsp, __comet_req, fb_dtsg(=csrftoken), jazoest, lsd, __spin_r/b/t, __crn, fb_api_caller_class, fb_api_req_friendly_name=usePolarisFollowMutation, server_timestamps=true, variables={"target_user_id":"<PK>","container_module":"profile","nav_chain":"PolarisProfilePostsTabRoot:profilePage:1:via_cold_start"}, doc_id=26508036048874888) + header X-FB-LSD, X-CSRFToken, X-IG-App-ID web. Teknik capture: hook XHR (mutasi lewat XHR, bukan fetch!) → klik Follow UI sekali → template → replace target_user_id per pk. Hasil: 7 following + 2 private pending (branxjxl, 969133929); profil "8 following" cocok. REST friendships/* tetap diblokir untuk sesi ini — ASIMETRI REST vs GRAPHQL adalah kunci. Template tergantung page-session (av/lsd/fb_dtsg) → pattern bookmarklet v8: hook + capture + replay. Debug follow @instagram dibiarkan (natural).
 
 **Status channel alligator (27 Sep, rangkuman penuh):** web REST → 429/HTML; app API (i.instagram.com + Bearer IGT:2 dari webview + header app lengkap) → `challenge_required`; **web GraphQL via browser (IAB/desktop) → SATU-SATUNYA channel tulis yang jalan** (9/9 follow sukses). Kesimpulan: akun baru berflag di dua channel API, tapi jalur GraphQL halaman (yang dipakai klien web asli) tetap terbuka. Setelah warming/challenge clear, app API bisa terbuka juga. Fleet flow final: ekstrak cookie webview Lite → inject ke browser → aksi via GraphQL halaman.
+
+**Debug APK deep-dive (28 Sep) — DINDING TEKNIS + yang berhasil:** frida-server17 harus jalan sebagai ROOT via `su 0 sh -c nohup…` (su -c nohup turun ke shell → tidak bisa ptrace); timer script TIDAK JALAN di proses spawn (bug frida 17 di Android 15/16 ROM ini) → hook harus sync saat load; libssl.so SSL_write hanya menangkap trafik native (facebook telemetry HTTP/1.1) — traffic API app → QUIC/HTTP3 atau Conscrypt; Conscrypt NativeCrypto pakai RegisterNatives (tanpa export symbol; libjavacore/libjavacrypto 0 export SSL_write); symbol RegisterNatives di libart disembunyikan; frida-java-bridge bundle error internal ("not a function" line 13751) — perlu debug bridge atau jalur lain (LSPosed/repack APK/emulator Android versi lain). Yang terbukti tetap: follow via GraphQL page-context (9/9), bio-link via web, ekstraksi sesi webview Lite. SELinux dikembalikan Enforcing + frida-server di-stop setelah sesi.
