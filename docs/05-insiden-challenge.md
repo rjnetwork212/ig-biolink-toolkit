@@ -45,3 +45,13 @@ Sesi `alligator.51935078` (akun baru, diekstrak dari webview Lite, diuji dari MC
 - Halaman web & UI login normal; hanya akses API yang dibungkam.
 
 Differential: sesi matang (shanialaksita export / chipmunk app) dari konteks sama tetap dapat JSON API. Kesimpulan: **umur + kredibilitas sesi/akun** menentukan akses API, bukan IP. Akun baru hasil SSO perlu warming (pakai app normal dulu beberapa hari) sebelum API-nya bisa dipakai otomasi.
+
+## Channel status: akun baru (alligator) vs tiga jalur tulis
+
+| Jalur | Status untuk akun baru/alligator |
+|---|---|
+| Web REST `/api/v1/` (VPS/browser) | ❌ 429 / HTML redirect |
+| App API `i.instagram.com` + Bearer IGT:2 + header app lengkap | ❌ `challenge_required` |
+| **Web GraphQL `/api/graphql` via halaman (IAB/desktop)** | ✅ **SATU-SATUNYA yang jalan** (9/9 follow) |
+
+Kunci: jangan meniru APK untuk operasi berbasis browser — pakai jalur GraphQL halaman. Channel app API terbuka kembali setelah akun matang/challenge clear.
