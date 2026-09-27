@@ -32,3 +32,7 @@ App di HP langsung menampilkan interlock:
 | 200 tapi data tidak berubah | param/schema salah (contoh: `bio_links` = no-op) → verifikasi selalu dengan GET terpisah |
 | 429 / HTML pada GET | rate-limit per-IP / header konteks kurang |
 | Akun tiba-tiba logout setelah tulis | sesi dinilai dicuri (cookie/fingerprint tidak konsisten, mis. campuran SessionBox) |
+
+## Eskalasi throttle VPS (27 Sep, setelah sesi tes)
+
+Setelah rangkaian tes hari ini, IP VPS mengalami eskalasi: GET → 429, POST → redirect HTML (302/200-HTML) alih-alih diproses. Akibatnya tes fitur follow/like/bio untuk akun baru dari VPS tidak mungkin dieksekusi (nol efek samping — POST tidak diproses server). Kanal yang sama dengan schema sama pagi itu sukses (shanialaksita7162). Kesimpulan: tes fitur berikutnya harus dari IP bersih (browser user). VPS untuk akun fleet: cooldown berjam-jam/berhari-hari atau hindari sama sekali.
