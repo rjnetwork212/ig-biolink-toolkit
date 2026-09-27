@@ -36,3 +36,12 @@ App di HP langsung menampilkan interlock:
 ## Eskalasi throttle VPS (27 Sep, setelah sesi tes)
 
 Setelah rangkaian tes hari ini, IP VPS mengalami eskalasi: GET → 429, POST → redirect HTML (302/200-HTML) alih-alih diproses. Akibatnya tes fitur follow/like/bio untuk akun baru dari VPS tidak mungkin dieksekusi (nol efek samping — POST tidak diproses server). Kanal yang sama dengan schema sama pagi itu sukses (shanialaksita7162). Kesimpulan: tes fitur berikutnya harus dari IP bersih (browser user). VPS untuk akun fleet: cooldown berjam-jam/berhari-hari atau hindari sama sekali.
+
+## Sesi baru / SSO webview: API dibatasi (27 Sep)
+
+Sesi `alligator.51935078` (akun baru, diekstrak dari webview Lite, diuji dari MCP browser residential IP):
+- GET `/api/v1/users/{pk}/info/` → **429**
+- POST follow/bio → **200 tapi halaman HTML** (redirect, tidak dieksekusi)
+- Halaman web & UI login normal; hanya akses API yang dibungkam.
+
+Differential: sesi matang (shanialaksita export / chipmunk app) dari konteks sama tetap dapat JSON API. Kesimpulan: **umur + kredibilitas sesi/akun** menentukan akses API, bukan IP. Akun baru hasil SSO perlu warming (pakai app normal dulu beberapa hari) sebelum API-nya bisa dipakai otomasi.
