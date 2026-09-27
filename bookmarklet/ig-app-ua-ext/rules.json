@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        {
+          "header": "User-Agent",
+          "operation": "set",
+          "value": "Instagram 448.0.0.52.84 Android (35/15; 280dpi; 720x1600; google; Pixel 10; frankel; zuma; en_US; 385412061)"
+        }
+      ]
+    },
+    "condition": {
+      "urlFilter": "||instagram.com/api/v1/",
+      "resourceTypes": ["xmlhttprequest"]
+    }
+  }
+]

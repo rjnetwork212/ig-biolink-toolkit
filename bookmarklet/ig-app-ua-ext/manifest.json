@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "IG App UA",
+  "version": "1.0",
+  "description": "Set User-Agent app Instagram hanya untuk request /api/v1/ di instagram.com (untuk bookmarklet IG Bio Links).",
+  "permissions": ["declarativeNetRequest"],
+  "host_permissions": ["*://*.instagram.com/*"],
+  "declarative_net_request": {
+    "rule_resources": [{ "id": "igappua", "enabled": true, "path": "rules.json" }]
+  }
+}
